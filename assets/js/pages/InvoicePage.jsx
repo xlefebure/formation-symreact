@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Select from "../components/forms/Select";
 import CustomersAPI from "../services/CustomersAPI";
 import InvoicesAPI from "../services/InvoicesAPI";
+import {toast} from "react-toastify";
 
 const InvoicePage = ({match, history}) => {
 
@@ -35,8 +36,8 @@ const InvoicePage = ({match, history}) => {
             setCustomers(data);
             if (!invoice.customer) setInvoice({...invoice, customer: data[0].id});
         } catch (error) {
+            toast.error("Une erreur est survenue lors du chargement des clients !");
             history.replace("/invoices");
-            // TODO : Notification
         }
     };
 
@@ -49,7 +50,7 @@ const InvoicePage = ({match, history}) => {
             const {amount, status, customer} = await InvoicesAPI.find(id);
             setInvoice({amount, status, customer: customer.id });
         } catch (error) {
-            // TODO : Notification
+            toast.error("Une erreur est survenue lors du chargement de la facture !");
             history.replace("/invoices");
         }
     };
@@ -91,11 +92,11 @@ const InvoicePage = ({match, history}) => {
         try {
             if (editing) {
                 await InvoicesAPI.update(id, invoice);
-                // TODO : Notification
+                toast.success("La facture a bien été modifiée !");
             } else {
                 await InvoicesAPI.create(invoice);
+                toast.success("La facture a bien été crée !");
                 history.replace("/invoices");
-                // TODO : Notification
             }
             setErrors({});
         } catch ({response}) {
@@ -107,7 +108,7 @@ const InvoicePage = ({match, history}) => {
                     apiErrors[propertyPath] = message;
                 });
                 setErrors(apiErrors);
-                // TODO : Notification
+                toast.error("Une erreur est survenue dans le formulaire !");
             }
         }
     };

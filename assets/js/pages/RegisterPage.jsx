@@ -4,6 +4,7 @@ import Field from "../components/forms/Field";
 import {Link} from "react-router-dom";
 import axios from "axios";
 import UsersAPI from "../services/UsersAPI";
+import {toast} from "react-toastify";
 
 const RegisterPage = ({history}) => {
 
@@ -36,12 +37,13 @@ const RegisterPage = ({history}) => {
         if (user.password !== user.passwordConfirm) {
             apiErrors.passwordConfirm = "Les mots de passe ne correspondent pas";
             setErrors(apiErrors);
+            toast.error("Une erreur est survenue dans le formulaire !");
             return ;
         }
 
         try {
             await UsersAPI.register(user);
-            // TODO : Notification
+            toast.success("Vous êtes désormais inscrit !");
             setErrors({});
             history.replace('/login');
         } catch ({response}) {
@@ -52,8 +54,8 @@ const RegisterPage = ({history}) => {
                     apiErrors[propertyPath] = message;
                 });
                 setErrors(apiErrors);
-                // TODO : Notification
             }
+            toast.error("Une erreur est survenue dans le formulaire !");
         }
     };
 
